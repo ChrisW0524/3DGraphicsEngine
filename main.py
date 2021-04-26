@@ -12,8 +12,10 @@ mainScreen = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_caption("3D Graphics Engine")
 
 # Initialize matrix and camera variables
-scale = 100
-changeScale = 0
+xScale, xScaleChange = 1, 0
+yScale, yScaleChange = 1, 0
+zScale, zScaleChange = 1, 0
+scale, scaleChange = 100, 0
 
 # Camera translation
 locX = 0
@@ -63,9 +65,9 @@ def draw_lines(a, b):
 def update(points):
     updated_points = []
 
-    displacement = np.array([[scale, 0, 0, -locX],
-                             [0, scale, 0, -locY],
-                             [0, 0, scale, -locZ],
+    displacement = np.array([[xScale + scale, 0, 0, -locX],
+                             [0, yScale + scale, 0, -locY],
+                             [0, 0, zScale + scale, -locZ],
                              [0, 0, 0, scale]])
 
     rotationX = np.array([[1, 0, 0, 0],
@@ -94,22 +96,24 @@ def update(points):
 
 
 def update_variables():
-    global scale, changeScale
-    global rotX, rotY, rotZ
-    global changeRotX, changeRotY, changeRotZ
+    global scale, xScale, yScale, zScale, scaleChange, xScaleChange, yScaleChange, zScaleChange
+    global rotX, rotY, rotZ,  changeRotX, changeRotY, changeRotZ
     rotX += changeRotX
     rotY += changeRotY
     rotZ += changeRotZ
-    scale += changeScale
+    xScale += xScaleChange
+    yScale += yScaleChange
+    zScale += zScaleChange
+    scale += scaleChange
+
 
 
 # Main game loop ------------------------------------------------------------------------------------------------------#
 def main():
     # Initialize game loop variables
-    global rotX, rotY, rotZ
-    global changeRotX, changeRotY, changeRotZ
+    global rotX, rotY, rotZ, changeRotX, changeRotY, changeRotZ
     global locX, locY, locZ
-    global scale, changeScale
+    global size, xScaleChange, yScaleChange, zScaleChange, scaleChange
     run = True
 
     # Initialize points ([[x], [y], [z], [1]])
@@ -153,9 +157,22 @@ def main():
                 if event.key == pygame.K_x:
                     changeRotZ = -math.pi / 360
                 if event.key == pygame.K_n:
-                    changeScale = -1
+                    scaleChange = -1
                 if event.key == pygame.K_m:
-                    changeScale = 1
+                    scaleChange = 1
+                if event.key == pygame.K_q:
+                    xScaleChange = 1
+                if event.key == pygame.K_a:
+                    xScaleChange = -1
+                if event.key == pygame.K_w:
+                    yScaleChange = 1
+                if event.key == pygame.K_s:
+                    yScaleChange = -1
+                if event.key == pygame.K_e:
+                    zScaleChange = 1
+                if event.key == pygame.K_d:
+                    zScaleChange = -1
+
             #KEYUP
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
@@ -165,7 +182,13 @@ def main():
                 if event.key == pygame.K_z or event.key == pygame.K_x:
                     changeRotZ = 0
                 if event.key == pygame.K_n or event.key == pygame.K_m:
-                    changeScale = 0
+                    scaleChange = 0
+                if event.key == pygame.K_q or event.key == pygame.K_a:
+                    xScaleChange = 0
+                if event.key == pygame.K_w or event.key == pygame.K_s:
+                    yScaleChange = 0
+                if event.key == pygame.K_e or event.key == pygame.K_d:
+                    zScaleChange = 0
             # Exit code
             if event.type == pygame.QUIT:
                 run = False
